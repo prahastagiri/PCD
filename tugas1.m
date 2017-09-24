@@ -22,7 +22,7 @@ function varargout = tugas1(varargin)
 
 % Edit the above text to modify the response to help tugas1
 
-% Last Modified by GUIDE v2.5 19-Sep-2017 23:21:56
+% Last Modified by GUIDE v2.5 24-Sep-2017 11:01:08
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -70,75 +70,54 @@ function varargout = tugas1_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 
+% ---------------------------- MAIN PROGRAM --------------------------
 
-% --- Executes on button press in pushbutton1.
-function pushbutton1_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton1 (see GCBO)
+% --- Executes during object creation, after setting all properties.
+function axes1_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to axes1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: place code in OpeningFcn to populate axes1
+
+% --- Executes on button press in Load.
+function Load_Callback(hObject, eventdata, handles)
+% hObject    handle to Load (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
 [file_name,path_name]=uigetfile({'*.jpg';'*.png';},...
     'Import image');
 if ~isequal (file_name,0)
     handles.data1=imread(fullfile(path_name,file_name));
     guidata(hObject, handles);
-    axes(handles.axes3);
+    axes(handles.axes1);
     imshow(handles.data1);
 else
     return
 end
 
-
-% --- Executes on button press in pushbutton2.
-function pushbutton2_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton2 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)]
-i=handles.data1;
-gray = .299*i(:,:,1) + .587*i(:,:,2) + .114*i(:,:,3);
-axes(handles.axes3);
-imshow(gray);
-
-
-% --- Executes on slider movement.
-function brightness_Callback(hObject, eventdata, handles)
-% hObject    handle to brightness (see GCBO)
+% --- Executes on button press in Greyscale.
+function Greyscale_Callback(hObject, eventdata, handles)
+% hObject    handle to Greyscale (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-a=handles.data1;
-p=im2double(a);
-val=1.0*get(hObject,'Value')-0.25;
-set(handles.brightnessInfo,'String',num2str(val));
-bright=p+val;
-axes(handles.axes3);
-imshow(bright);
+i=handles.data1;
+gray = .299*i(:,:,1) + .587*i(:,:,2) + .114*i(:,:,3);
+axes(handles.axes1);
+imshow(gray);
 
-% Hints: get(hObject,'Value') returns position of slider
-%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-
-
-% --- Executes during object creation, after setting all properties.
-function brightness_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to brightness (see GCBO)
+% --- Executes on button press in Reset.
+function Reset_Callback(hObject, eventdata, handles)
+% hObject    handle to Reset (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
+% handles    structure with handles and user data (see GUIDATA)
+p = handles.data1;
+axes(handles.axes1);
+imshow(p);
 
-% Hint: slider controls usually have a light gray background.
-if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor',[.9 .9 .9]);
-end
-
-
-% --- Executes during object creation, after setting all properties.
-function brightnessInfo_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to brightnessInfo (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-
-% --- Executes on button press in upButton.
-function upButton_Callback(hObject, eventdata, handles)
-% hObject    handle to upButton (see GCBO)
+% --- Executes on button press in UpButton.
+function UpButton_Callback(hObject, eventdata, handles)
+% hObject    handle to UpButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 a=handles.data1;
@@ -146,10 +125,9 @@ p=im2double(a);
 step = 5;
 ylim(ylim+step);
 
-
-% --- Executes on button press in rightButton.
-function rightButton_Callback(hObject, eventdata, handles)
-% hObject    handle to rightButton (see GCBO)
+% --- Executes on button press in RightButton.
+function RightButton_Callback(hObject, eventdata, handles)
+% hObject    handle to RightButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 a=handles.data1;
@@ -157,11 +135,9 @@ p=im2double(a);
 step = 5;
 xlim(xlim-step);
 
-
-
-% --- Executes on button press in leftButton.
-function leftButton_Callback(hObject, eventdata, handles)
-% hObject    handle to leftButton (see GCBO)
+% --- Executes on button press in LeftButton.
+function LeftButton_Callback(hObject, eventdata, handles)
+% hObject    handle to LeftButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 a=handles.data1;
@@ -169,10 +145,9 @@ p=im2double(a);
 step = 5;
 xlim(xlim+step);
 
-
-% --- Executes on button press in downButton.
-function downButton_Callback(hObject, eventdata, handles)
-% hObject    handle to downButton (see GCBO)
+% --- Executes on button press in DownButton.
+function DownButton_Callback(hObject, eventdata, handles)
+% hObject    handle to DownButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 a=handles.data1;
@@ -180,11 +155,64 @@ p=im2double(a);
 step = 5;
 ylim(ylim-step);
 
-% --- Executes on button press in resetButton.
-function resetButton_Callback(hObject, eventdata, handles)
-% hObject    handle to resetButton (see GCBO)
+% --- Executes on slider movement.
+function SldBrightness_Callback(hObject, eventdata, handles)
+% hObject    handle to SldBrightness (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-p = handles.data1;
-axes(handles.axes3);
-imshow(p);
+
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+a=handles.data1;
+p=im2double(a);
+val=1.0*get(hObject,'Value')-0.25;
+set(handles.SldBrightnessInfo,'String',num2str(val));
+bright=p+val;
+axes(handles.axes1);
+imshow(bright);
+
+% --- Executes during object creation, after setting all properties.
+function SldBrightness_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to SldBrightness (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+% --- Executes during object creation, after setting all properties.
+function SldBrightnessInfo_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to SldBrightnessInfo (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+
+% --- Executes on button press in Brightnessx1.
+function Brightnessx1_Callback(hObject, eventdata, handles)
+% hObject    handle to Brightnessx1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in Brightnessx2.
+function Brightnessx2_Callback(hObject, eventdata, handles)
+% hObject    handle to Brightnessx2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% --- Executes on button press in ZoomIn.
+function ZoomIn_Callback(hObject, eventdata, handles)
+% hObject    handle to ZoomIn (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in ZoomOut.
+function ZoomOut_Callback(hObject, eventdata, handles)
+% hObject    handle to ZoomOut (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+
