@@ -22,7 +22,7 @@ function varargout = tugas1(varargin)
 
 % Edit the above text to modify the response to help tugas1
 
-% Last Modified by GUIDE v2.5 31-Oct-2017 17:48:31
+% Last Modified by GUIDE v2.5 22-Nov-2017 12:03:35
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -436,6 +436,7 @@ N = size(y,1)-1;
 %Gaussian
 Exp_comp = -(x.^2+y.^2)/(2*sigmax*sigmay);
 Kernel= exp(Exp_comp)/(2*pi*sigmax*sigmay);
+
 hasil=zeros(size(I));
 I = padarray(I,[sz sz]);
  
@@ -593,3 +594,225 @@ mmed=mmed+zero;
 
 axes(handles.axes1);
 imshow(mmed,[0 255]);
+
+
+% --- Executes on button press in edgetipis.
+function edgetipis_Callback(hObject, eventdata, handles)
+% hObject    handle to edgetipis (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+a=handles.data1;
+b=im2double(a);
+b = .299*b(:,:,1) + .587*b(:,:,2) + .114*b(:,:,3);
+[m,n]=size(b);
+
+L(1:m,1:n)=0
+for i=1:m-2;
+    for j=1:n-2;
+        L(i,j)=-1*b(i,j)+0+0+1*b(i+1,j+1);
+    end;
+end;
+
+M(1:m,1:n)=0
+for i=1:m-2;
+    for j=1:n-2;
+        M(i,j)=0-1*b(i,j+1)+1*b(i+1,j)+0;
+    end;
+end;
+N=M+L;
+axes(handles.axes1);
+imshow(N)
+
+% --- Executes on button press in edsedang.
+function edsedang_Callback(hObject, eventdata, handles)
+% hObject    handle to edsedang (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in edtebal.
+function edtebal_Callback(hObject, eventdata, handles)
+% hObject    handle to edtebal (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+w=handles.data1;
+w=im2double(w);
+B = .299*w(:,:,1) + .587*w(:,:,2) + .114*w(:,:,3);
+
+for i=1:size(B,1)-2
+    for j=1:size(B,2)-2
+    mx=((2*B(i+2,j+1)+B(i+2,j)+B(i+2,j+2))-(2*B(i,j+1)+B(i,j)+B(i,j+2)));
+    my=((2*B(i+1,j+2)+B(i,j+2)+B(i+2,j+2))-(2*B(i+1,j)+B(i,j)+B(i+2,j)));
+    I(i,j)=sqrt(mx.^2+my.^2);
+    end
+end
+axes(handles.axes1);
+imshow(I);
+
+% --- Executes on button press in Gaussian.
+function Gaussian_Callback(hObject, eventdata, handles)
+% hObject    handle to Gaussian (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+w = handles.data1;
+A = .299*w(:,:,1) + .587*w(:,:,2) + .114*w(:,:,3);
+I = double(A);
+sigmax = 2;
+sigmay = 2.5;
+sz = 3;
+[x,y]=meshgrid(-sz:sz,-sz:sz);
+M = size(x,1)-1;
+N = size(y,1)-1;
+
+%Gaussian
+Exp_comp = -(x.^2+y.^2)/(2*sigmax*sigmay);
+Kernel= exp(Exp_comp)/(2*pi*sigmax*sigmay);
+
+hasil=zeros(size(I));
+I = padarray(I,[sz sz]);
+ 
+%Convolution
+for i = 1:size(I,1)-M
+    for j =1:size(I,2)-N
+        Temp = I(i:i+M,j:j+M).*Kernel;
+        hasil(i,j)=sum(Temp(:));
+    end
+end
+axes(handles.axes1);
+hasil = uint8(hasil);
+imshow(hasil);
+
+% --- Executes on button press in Blur.
+function Blur_Callback(hObject, eventdata, handles)
+% hObject    handle to Blur (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in Sharpening.
+function Sharpening_Callback(hObject, eventdata, handles)
+% hObject    handle to Sharpening (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+w=handles.data1;
+A = .299*w(:,:,1) + .587*w(:,:,2) + .114*w(:,:,3);
+%Preallocate the matrices with zeros
+I1=A;
+I=zeros(size(A));
+%Filter Masks
+F1=[0 1 0;1 -4 1;0 1 0];
+%Padarray with zeros
+A=padarray(A,[1,1]);
+A=double(A);
+%Implementation of the equation
+for i=1:size(A,1)-2
+    for j=1:size(A,2)-2
+       
+        I(i,j)=sum(sum(F1.*A(i:i+2,j:j+2)));
+       
+    end
+end
+axes(handles.axes1);
+I=uint8(I);
+B=I1-I;
+imshow(B);
+
+
+% --- Executes on button press in Threshold.
+function Threshold_Callback(hObject, eventdata, handles)
+% hObject    handle to Threshold (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+z=handles.data1;
+a = .299*z(:,:,1) + .587*z(:,:,2) + .114*z(:,:,3);
+[m,n]=size(a); %assign size a to m and n
+
+for i=1:m %1 to m
+    for j=1:n %1 to n
+        if a(i,j)<=128 %pixel value less than 128. middle value of RGB
+        b(i,j)=0; % threshold image will be 0
+        else
+        b(i,j)=255; %other value – threshold image will be 255
+        end
+    end
+end
+axes(handles.axes1);
+imshow(b);
+
+
+% --- Executes on button press in regiongrowth.
+function regiongrowth_Callback(hObject, eventdata, handles)
+% hObject    handle to regiongrowth (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+T=0.02;
+x=handles.data1;
+im = .299*x(:,:,1) + .587*x(:,:,2) + .114*x(:,:,3);
+im=im2double(im);
+[r,c]=size(im);
+A=zeros(r,c); % segmented mask
+F=[]; % frontier list
+s=uint16(ginput(1));    % get the click coordinates
+s=[s(2),s(1)];      % [row,col]
+A(s(1),s(2))=1;
+F=[F;s];
+
+    while(~isempty(F)) % if frontier is empty
+        n=neighbours(F(1,1),F(1,2),r,c);   % 4 neighbourhood
+        for i=1:size(n,1)
+            if(abs(im(F(1,1),F(1,2))-im(n(i,1),n(i,2)))<T && A(n(i,1),n(i,2))~=1)% less than threshold & not already segmented
+                A(n(i,1),n(i,2))=1;
+                F=[F;n(i,1),n(i,2)];
+            end
+        end
+        F(1,:)=[];
+    end
+axes(handles.axes1);
+imshow(A);
+function out=neighbours(s1,s2,r,c)
+    out=[];
+    if(s2>1),  out=[out;s1,s2-1];   end
+    if(s1>1),  out=[out;s1-1,s2];   end
+    if(s1<r),  out=[out;s1+1,s2];   end
+    if(s2<c),  out=[out;s1,s2+1];   end
+    
+    
+
+
+% --- Executes on button press in Dilasi.
+function Dilasi_Callback(hObject, eventdata, handles)
+% hObject    handle to Dilasi (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+a=handles.data1;
+a = .299*a(:,:,1) + .587*a(:,:,2) + .114*a(:,:,3);
+p=size(a);
+
+w=[1 1 1;1 1 1;1 1 1];
+for x=2:1:p(1)-1
+    for y=2:1:p(2)-1
+         a1=[w(1)*a(x-1,y-1) w(2)*a(x-1,y) w(3)*a(x-1,y+1) w(4)*a(x,y-1) w(5)*a(x,y) w(6)*a(x,y+1) w(7)*a(x+1,y-1) w(8)*a(x+1,y) w(9)*a(x+1,y+1)];
+         Er(x,y)=min(a1); % Erosion
+    end
+end
+axes(handles.axes1);
+imshow(Er);
+
+% --- Executes on button press in Erosi.
+function Erosi_Callback(hObject, eventdata, handles)
+% hObject    handle to Erosi (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+a=handles.data1;
+a = .299*a(:,:,1) + .587*a(:,:,2) + .114*a(:,:,3);
+p=size(a);
+
+w=[1 1 1;1 1 1;1 1 1];
+for x=2:1:p(1)-1
+    for y=2:1:p(2)-1
+         a1=[w(1)*a(x-1,y-1) w(2)*a(x-1,y) w(3)*a(x-1,y+1) w(4)*a(x,y-1) w(5)*a(x,y) w(6)*a(x,y+1) w(7)*a(x+1,y-1) w(8)*a(x+1,y) w(9)*a(x+1,y+1)];
+         Di(x,y)=max(a1); %Dilation
+    end
+end
+axes(handles.axes1);
+imshow(Di);
